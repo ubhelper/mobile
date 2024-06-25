@@ -66,10 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Image(image: AssetImage("assets/images/logo_white.png"), width: 100, fit: BoxFit.fill ),
+                            Image(image: AssetImage("assets/images/logo_white.png"), width: size.width / 5, fit: BoxFit.fill ),
                             Text(
                               'Бие биедээ туслаад мөнгө\nолоорой',
-                              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w500, height: 1),
+                              style: TextStyle(fontSize: size.width / 20, color: Colors.white, fontWeight: FontWeight.w500, height: 1),
                               textAlign: TextAlign.center,
                             )
                           ],
@@ -96,11 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onPressed: _incrementCounter,
                                       child: Image(
                                         image: AssetImage("assets/images/arrow_right.png"),
-                                        width: 30,
+                                        width: size.width/20,
                                       ),
                                       style: ElevatedButton.styleFrom(
                                         shape: CircleBorder(),
-                                        padding: EdgeInsets.all(24),
+                                        padding: EdgeInsets.all(22),
                                         backgroundColor: const Color(0x3B4381),
                                       ),
                                     )

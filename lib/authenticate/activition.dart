@@ -270,10 +270,10 @@ class _ActivitionPageWidgetsState extends State<ActivitionPageWidgets> {
                 )
             ),
             Positioned.fill(
-                top: 180.0,
+                top: size.height / 8,
                 child: Align(
                     alignment: Alignment.topCenter,
-                    child: Image(image: AssetImage("assets/images/logo_blue.png"), width: 100, fit: BoxFit.fill)
+                    child: Image(image: AssetImage("assets/images/logo_white.png"), width: size.width / 4, fit: BoxFit.fill)
                 )
             ),
           ],

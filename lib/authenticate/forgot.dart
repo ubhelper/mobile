@@ -76,7 +76,7 @@ class _ForgotPasswordPageWidgetState extends State<ForgotPasswordPageWidgets> {
                               "Нууц үг сэргээх",
                               style: TextStyle(
                                 height: 1.0,
-                                fontSize: 20,
+                                fontSize: size.width/25,
                                 color: Colors.white,
                               ),
                             ),
@@ -97,13 +97,13 @@ class _ForgotPasswordPageWidgetState extends State<ForgotPasswordPageWidgets> {
                               ]
                           ),
                           child: TextField(
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: size.width/25),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Утасны дугаар',
                               fillColor: Colors.white,
                               filled: true,
-                              contentPadding: const EdgeInsets.only(left: 30.0, bottom: 30, top: 10),
+                              contentPadding: const EdgeInsets.only(left: 30.0, bottom: 15, top: 15),
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15)
                               ),
@@ -130,7 +130,7 @@ class _ForgotPasswordPageWidgetState extends State<ForgotPasswordPageWidgets> {
                             child: ButtonTheme(
                               child: TextButton(
                                 style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<EdgeInsets>( EdgeInsets.only(top: 25, bottom: 25, left: 30, right: 30)),
+                                  padding: MaterialStateProperty.all<EdgeInsets>( EdgeInsets.only(top: 15, bottom: 15)),
                                   backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(59, 67, 129, 1.0)),
                                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
@@ -146,7 +146,7 @@ class _ForgotPasswordPageWidgetState extends State<ForgotPasswordPageWidgets> {
                                       "Үргэлжлүүлэх",
                                       style: TextStyle(
                                         height: 1.0,
-                                        fontSize: 20,
+                                        fontSize: size.width/22,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -161,21 +161,21 @@ class _ForgotPasswordPageWidgetState extends State<ForgotPasswordPageWidgets> {
                 )
             ),
             Positioned.fill(
-                top: 180.0,
+                top: size.height / 8,
                 child: Align(
                     alignment: Alignment.topCenter,
-                    child: Image(image: AssetImage("assets/images/logo_white.png"), width: 100, fit: BoxFit.fill)
+                    child: Image(image: AssetImage("assets/images/logo_white.png"), width: size.width / 4, fit: BoxFit.fill)
                 )
             ),
 
             Positioned.fill(
-                top: 70.0,
-                left: 35,
+                top: size.height / 10,
+                left: size.width / 10,
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: TextButton(
                       onPressed: _backToLogin,
-                      child: Image(image: AssetImage("assets/images/arrow_left.png"), width: 40, fit: BoxFit.fill)
+                      child: Image(image: AssetImage("assets/images/arrow_left.png"), width: size.width / 10, fit: BoxFit.fill)
                     )
                 )
             ),

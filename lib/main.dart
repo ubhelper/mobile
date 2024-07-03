@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'authenticate/login.dart';
+import './maps/map.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -31,9 +35,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  void _incrementCounter() async {
 
-  void _incrementCounter() {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var t = prefs.getString('token');
+
+    if (t != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MapApp())
+      );
+      return;
+    }
+
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage())

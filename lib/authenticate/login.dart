@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'forgot.dart';
-
-void main() {
-  runApp(const LoginPage());
-}
+import '../maps/map.dart';
+import '../authenticate/register.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -32,12 +36,56 @@ class LoginPageWidgets extends StatefulWidget {
 
 class _LoginPageWidgetsState extends State<LoginPageWidgets> {
 
-  void _login() {
-    print('hello login function');
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => const LoginPage())
-    // );
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  void _login () async {
+    if (_phoneController.text == '' || _passwordController.text == '') {
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse(dotenv.env['APP_URL']! + '/v1/user/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'phone': _phoneController.text,
+        'password': _passwordController.text
+      }),
+    );
+
+
+    if (response.statusCode != 200) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Нэвтрэх'),
+          content: const Text('Хэрэглэгчийн нэр эсвэл нууц үг буруу'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('За, Ойлголоо'),
+            ),
+          ],
+        ),
+      );
+
+      return;
+    }
+
+    final Map parsed = json.decode(response.body);
+    final data = parsed['data'];
+
+    SharedPreferences.setMockInitialValues({});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', data['token']);
+    prefs.setString('user', json.encode(data));
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MapApp())
+    );
   }
   void _forgot() {
     Navigator.push(
@@ -46,27 +94,42 @@ class _LoginPageWidgetsState extends State<LoginPageWidgets> {
     );
   }
 
+  void f_register() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RegisterApp())
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/home_bg.jpg"),
-                fit: BoxFit.cover
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //       image: AssetImage("assets/images/home_bg.jpg"),
+          //   ),
+          // ),
           child: Stack(
             children: [
+              Positioned.fill(
+                child: Image(
+                  image: new AssetImage('assets/images/home_bg.jpg'),
+                  width: size.width,
+                  height: size.height,
+                  fit: BoxFit.cover,
+                )
+              ),
               Positioned(
                 width: size.width,
                 height: size.height,
                 child: Container(
                     color: const Color(0x1E319D).withOpacity(.8),
                     child: Container(
-                      margin: const EdgeInsets.only(left: 50.0, right: 50),
+                      margin: const EdgeInsets.only(left: 50.0, right: 50, top: 200),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget> [
@@ -86,6 +149,8 @@ class _LoginPageWidgetsState extends State<LoginPageWidgets> {
                                 ]
                             ),
                             child: TextField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.number,
                               style: TextStyle(fontSize: size.width/25),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
@@ -117,6 +182,10 @@ class _LoginPageWidgetsState extends State<LoginPageWidgets> {
                                 ]
                             ),
                             child: TextField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              enableSuggestions: false,
+                              autocorrect: false,
                               style: TextStyle(fontSize: size.width/25),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
@@ -193,43 +262,41 @@ class _LoginPageWidgetsState extends State<LoginPageWidgets> {
                                 ),
                               )
                           ),
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                  margin: const EdgeInsets.only(top: 200),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Та бүртгэлгүй юу?",
+                                        style: TextStyle(
+                                          height: 1.0,
+                                          fontSize: size.width/25,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                          "Бүртгүүлэх",
+                                          style: TextStyle(
+                                            height: 1.0,
+                                            fontSize: size.width/25,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onPressed: f_register,
+                                      )
+                                    ],
+                                  )
+                              )
+                          )
                         ],
                       ),
                     )
                 ),
-              ),
-              Positioned.fill(
-                  bottom: 30.0,
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Та бүртгэлгүй юу?",
-                              style: TextStyle(
-                                height: 1.0,
-                                fontSize: size.width/25,
-                                color: Colors.white,
-                              ),
-                            ),
-                            TextButton(
-                              child: Text(
-                              "Бүртгүүлэх",
-                                style: TextStyle(
-                                  height: 1.0,
-                                  fontSize: size.width/25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              onPressed: _login,
-                            )
-                          ],
-                        )
-                      )
-                  )
               ),
               Positioned.fill(
                   top: size.height / 8,
@@ -238,6 +305,39 @@ class _LoginPageWidgetsState extends State<LoginPageWidgets> {
                       child: Image(image: AssetImage("assets/images/logo_white.png"), width: size.width / 4, fit: BoxFit.fill)
                   )
               ),
+              // Positioned.fill(
+              //     bottom: 30.0,
+              //     child: Align(
+              //         alignment: Alignment.bottomCenter,
+              //         child: Container(
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.center,
+              //               children: [
+              //                 Text(
+              //                   "Та бүртгэлгүй юу?",
+              //                   style: TextStyle(
+              //                     height: 1.0,
+              //                     fontSize: size.width/25,
+              //                     color: Colors.white,
+              //                   ),
+              //                 ),
+              //                 TextButton(
+              //                   child: Text(
+              //                     "Бүртгүүлэх",
+              //                     style: TextStyle(
+              //                       height: 1.0,
+              //                       fontSize: size.width/25,
+              //                       fontWeight: FontWeight.bold,
+              //                       color: Colors.white,
+              //                     ),
+              //                   ),
+              //                   onPressed: f_register,
+              //                 )
+              //               ],
+              //             )
+              //         )
+              //     )
+              // )
             ],
           )
       ),

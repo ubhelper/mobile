@@ -40,17 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var t = prefs.getString('token');
 
-    if (t != null) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MapApp())
-      );
-      return;
-    }
+    // if (t != null) {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => const MapApp())
+    //   );
+    //   return;
+    // }
+    //
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => const LoginPage())
+    // );
 
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage())
+        MaterialPageRoute(builder: (context) => const MapApp())
     );
   }
 
